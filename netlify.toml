@@ -1,0 +1,6 @@
+[build]
+  publish = "."
+  command = ""
+
+# Publish the repository root (static files are in the project root: index.html, app.js, styles.css)
+# No build step is required for this plain HTML/JS/CSS project.

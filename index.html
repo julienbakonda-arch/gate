@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Smart Access Management System</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="styles.css" />
+  </head>
+  <body>
+    <div class="login-screen active" id="loginScreen">
+      <div class="login-card">
+        <div class="login-head">
+          <div>
+            <p class="brand-name">SAMS</p>
+            <p class="brand-subtitle">Connexion sécurisée</p>
+          </div>
+          <div class="login-badge">Système de gestion d'accès intelligent</div>
+        </div>
+        <form id="loginForm" class="login-form">
+          <label>
+            Identifiant / Email
+            <input type="text" id="loginUsername" placeholder="admin@gmail.com ou user@gmail.com" required />
+          </label>
+          <label>
+            Mot de passe
+            <input type="password" id="loginPassword" placeholder="Votre mot de passe" required />
+          </label>
+          <button class="primary-button" type="submit">Se connecter</button>
+          <p class="login-hint">Admin : admin@gmail.com / admin123 · Utilisateur simple : user@gmail.com / user123</p>
+        </form>
+      </div>
+    </div>
+
+    <div class="app-shell hidden" id="appShell">
+      <aside class="app-nav">
+        <div class="nav-brand">
+          <div class="brand-logo"></div>
+          <div>
+            <p class="brand-name">SAMS</p>
+            <p class="brand-subtitle">Application de contrôle</p>
+          </div>
+        </div>
+        <nav class="nav-menu" id="navMenu">
+          <button type="button" class="nav-item active" data-page="dashboard"><span class="material-symbols-outlined nav-icon">dashboard</span><span class="nav-text">Tableau de bord</span></button>
+          <button type="button" class="nav-item" data-page="historique"><span class="material-symbols-outlined nav-icon">history</span><span class="nav-text">Historique</span></button>
+          <button type="button" class="nav-item" data-page="notifications"><span class="material-symbols-outlined nav-icon">notifications</span><span class="nav-text">Notifications</span></button>
+          <button type="button" class="nav-item" data-page="radar"><span class="material-symbols-outlined nav-icon">radar</span><span class="nav-text">Radar</span></button>
+          <button type="button" class="nav-item" data-page="settings"><span class="material-symbols-outlined nav-icon">settings</span><span class="nav-text">Paramètres</span></button>
+          <button type="button" class="nav-item" data-page="camera"><span class="material-symbols-outlined nav-icon">photo_camera</span><span class="nav-text">Caméra</span></button>
+          <button type="button" class="nav-item" data-page="users" id="usersMenuItem"><span class="material-symbols-outlined nav-icon">group</span><span class="nav-text">Utilisateurs</span></button>
+        </nav>
+        <div class="nav-footer">
+          <div>
+            <p class="nav-footer-label">Connecté en tant que</p>
+            <p class="nav-footer-value" id="navUserRole">Invité</p>
+          </div>
+        </div>
+      </aside>
+
+      <section class="app-main">
+        <header class="topbar">
+          <div class="brand">
+            <p class="brand-name">SAMS</p>
+            <p class="brand-subtitle" id="topbarSubtitle">Bienvenue</p>
+          </div>
+          <div class="topbar-actions">
+            <button class="icon-button" id="themeToggle" aria-label="Basculer le thème">
+              <span class="material-symbols-outlined icon-theme">light_mode</span>
+            </button>
+            <div class="profile-chip">
+              <span id="profileName">Utilisateur</span>
+              <div class="profile-avatar" id="profileInitial">U</div>
+            </div>
+          </div>
+        </header>
+
+        <main class="app-content">
+          <section class="content-page active" id="dashboardPage">
+            <div class="section-card fade-in">
+              <div class="section-header">
+                <div>
+                  <h2>Vue système</h2>
+                  <p>Statut du portail, de la caméra et de la connexion.</p>
+                </div>
+              </div>
+              <div class="status-row">
+                <article class="status-card pulse-in">
+                  <div class="status-card-head"><span class="material-symbols-outlined status-icon">power_settings_new</span><h3>Portail</h3></div>
+                  <p id="doorState">Chargement...</p>
+                </article>
+                <article class="status-card pulse-in delay-1">
+                  <div class="status-card-head"><span class="material-symbols-outlined status-icon">videocam</span><h3>Caméra</h3></div>
+                  <p id="cameraState">Chargement...</p>
+                </article>
+                <article class="status-card pulse-in delay-2">
+                  <div class="status-card-head"><span class="material-symbols-outlined status-icon">wifi</span><h3>Wi-Fi</h3></div>
+                  <p id="wifiState">Chargement...</p>
+                </article>
+              </div>
+            </div>
+
+            <div class="section-card fade-in">
+              <div class="section-header">
+                <div>
+                  <h2>Contrôle du portail</h2>
+                  <p>Ouvrez ou fermez le portail sans changer de page.</p>
+                </div>
+                <button class="ghost-button" id="viewCameraBtn"><span class="material-symbols-outlined button-icon">visibility</span> Voir la caméra</button>
+              </div>
+
+              <div class="control-panel">
+                <div class="door-actions">
+                  <button class="primary-button" data-action="open">Fermer</button>
+                  <button class="secondary-button" data-action="close">Ouvrir</button>
+                </div>
+                <div class="door-preview">
+                  <div class="door-icon"></div>
+                  <div>
+                    <p>État actuel</p>
+                    <strong id="doorLabel">Chargement...</strong>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div class="section-card fade-in delay-1">
+              <div class="section-header">
+                <div>
+                  <h2>Statistiques rapides</h2>
+                  <p>Vue synthétique des événements et de l'activité.</p>
+                </div>
+              </div>
+
+              <div class="metrics-grid">
+                <article class="metric-card">
+                  <span>Ouvertures aujourd'hui</span>
+                  <strong id="todayOpenings">0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Fermetures</span>
+                  <strong id="todayClosures">0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Utilisateurs actifs</span>
+                  <strong id="activeUsers">0</strong>
+                </article>
+                <article class="metric-card">
+                  <span>Présences détectées</span>
+                  <strong id="presenceAlerts">0</strong>
+                </article>
+              </div>
+            </div>
+
+            <div class="section-card fade-in delay-2">
+              <div class="section-header">
+                <div>
+                  <h2>État des capteurs</h2>
+                  <p>Ultrasonique, RFID et empreinte digitale.</p>
+                </div>
+              </div>
+              <div class="sensor-grid">
+                <article class="sensor-card">
+                  <span>Capteur ultrasonique</span>
+                  <strong id="sensorDistance">-- m</strong>
+                </article>
+                <article class="sensor-card">
+                  <span>RFID</span>
+                  <strong>Prêt</strong>
+                </article>
+                <article class="sensor-card">
+                  <span>Empreinte digitale</span>
+                  <strong>Prête</strong>
+                </article>
+              </div>
+            </div>
+          </section>
+
+          <section class="content-page" id="historiquePage">
+            <div class="section-card fade-in">
+              <div class="section-header">
+                <div>
+                  <h2>Historique complet</h2>
+                  <p>Toutes les activités restent consultables selon votre accès.</p>
+                </div>
+              </div>
+              <div class="history-table-wrapper">
+                <table class="history-table">
+                  <thead>
+                    <tr>
+                      <th>Date</th>
+                      <th>Heure</th>
+                      <th>Type</th>
+                      <th>Méthode</th>
+                      <th>Utilisateur</th>
+                      <th>État</th>
+                    </tr>
+                  </thead>
+                  <tbody id="historyTableBody"></tbody>
+                </table>
+              </div>
+            </div>
+          </section>
+
+          <section class="content-page" id="notificationsPage">
+            <div class="section-card fade-in">
+              <div class="section-header">
+                <div>
+                  <h2>Notifications</h2>
+                  <p>Suivez les alertes et événements en temps réel.</p>
+                </div>
+              </div>
+              <div class="notifications-list" id="notificationsList"></div>
+            </div>
+          </section>
+
+          <section class="content-page" id="radarPage">
+            <div class="section-card fade-in">
+              <div class="section-header">
+                <div>
+                  <h2>Radar ultrasonique</h2>
+                  <p>Visualisation en temps réel des mesures du HC-SR04.</p>
+                </div>
+                <div class="device-badge" id="radarDetectionStatus">BALAYAGE ACTIF</div>
+              </div>
+              <div class="radar-layout">
+                <canvas id="radarCanvas" width="680" height="400" aria-label="Radar ultrasonique en temps réel"></canvas>
+                <div class="radar-values" aria-live="polite">
+                  <div><span>Angle actuel</span><strong id="radarAngle">--°</strong></div>
+                  <div><span>Distance</span><strong id="radarDistance">-- cm</strong></div>
+                  <div><span>Objet détecté</span><strong id="radarObject">Non</strong></div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="content-page" id="cameraPage">
+            <div class="section-card fade-in">
+              <div class="section-header">
+                <div>
+                  <h2>Caméra de surveillance</h2>
+                  <p>Visualisez la caméra et contrôlez l'accès à distance.</p>
+                </div>
+              </div>
+              <div class="camera-card">
+                <div class="camera-preview" id="cameraPreview">
+                  <span>Flux vidéo en attente</span>
+                </div>
+                <div class="camera-status">
+                  <div>
+                    <strong>Caméra</strong>
+                    <p id="cameraPreviewStatus">Initialisation...</p>
+                  </div>
+                  <button class="ghost-button" id="refreshCamera">Rafraîchir</button>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="content-page" id="settingsPage">
+            <div class="section-card fade-in">
+              <div class="section-header">
+                <div>
+                  <h2>Paramètres</h2>
+                  <p>Communication locale directe avec l'ESP8266, sans Internet ni serveur intermédiaire.</p>
+                </div>
+              </div>
+
+              <div class="settings-panel">
+                <div class="settings-header-row">
+                  <div>
+                    <h3>Gestion de l'appareil</h3>
+                    <p>Connectez d'abord ce téléphone ou ordinateur au Wi-Fi créé par l'ESP, puis détectez-le ici.</p>
+                  </div>
+                  <button class="primary-button" id="addDeviceBtn">+ Ajouter un appareil</button>
+                </div>
+
+                <div class="devices-list-panel">
+                  <h4>Appareils enregistrés</h4>
+                  <div class="devices-list" id="registeredDevicesList">
+                    <p class="placeholder-text">Aucun appareil enregistré pour le moment.</p>
+                  </div>
+                </div>
+
+                <div class="device-summary-grid" id="deviceSummaryGrid">
+                  <article class="device-card">
+                    <div class="device-card-head">
+                      <span class="material-symbols-outlined device-icon">devices</span>
+                      <div>
+                        <h4>Appareil</h4>
+                        <p id="deviceNameLabel">Aucun appareil sélectionné</p>
+                      </div>
+                    </div>
+                    <div class="device-badge" id="deviceStatusBadge">Déconnecté</div>
+                  </article>
+                  <article class="device-card">
+                    <div class="device-card-head">
+                      <span class="material-symbols-outlined device-icon">wifi</span>
+                      <div>
+                        <h4>Connexion</h4>
+                        <p id="deviceConnectionLabel">Non disponible</p>
+                      </div>
+                    </div>
+                    <div class="device-badge device-badge-warning" id="deviceNetworkBadge">En attente</div>
+                  </article>
+                  <article class="device-card">
+                    <div class="device-card-head">
+                      <span class="material-symbols-outlined device-icon">security</span>
+                      <div>
+                        <h4>API ESP locale</h4>
+                        <p id="deviceServerLabel">Non connecté</p>
+                      </div>
+                    </div>
+                    <div class="device-badge device-badge-warning" id="deviceServerBadge">Hors ligne</div>
+                  </article>
+                </div>
+
+                <div class="device-details-grid" id="deviceDetailsGrid">
+                  <article class="detail-card">
+                    <h4>Appareil</h4>
+                    <dl>
+                      <dt>Nom</dt><dd id="deviceName">-</dd>
+                      <dt>Device ID</dt><dd id="deviceId">-</dd>
+                      <dt>Statut</dt><dd id="deviceStatus">Déconnecté</dd>
+                      <dt>Dernière connexion</dt><dd id="deviceLastSeen">-</dd>
+                      <dt>Firmware</dt><dd id="deviceFirmware">-</dd>
+                      <dt>Uptime</dt><dd id="deviceUptime">-</dd>
+                    </dl>
+                  </article>
+                  <article class="detail-card">
+                    <h4>Connexion</h4>
+                    <dl>
+                      <dt>Wi-Fi SSID</dt><dd id="deviceWifiSsid">-</dd>
+                      <dt>IP locale</dt><dd id="deviceLocalIp">-</dd>
+                      <dt>Signal</dt><dd id="deviceRssi">-</dd>
+                      <dt>Internet</dt><dd id="deviceInternetStatus">Non requis</dd>
+                      <dt>API locale</dt><dd id="deviceServerStatus">-</dd>
+                      <dt>Synchronisation</dt><dd id="deviceLastSync">-</dd>
+                    </dl>
+                  </article>
+                  <article class="detail-card">
+                    <h4>Matériel</h4>
+                    <dl>
+                      <dt>Portail</dt><dd id="deviceDoorHardware">-</dd>
+                      <dt>RFID</dt><dd id="deviceRfidStatus">-</dd>
+                      <dt>Fingerprint</dt><dd id="deviceFingerprintStatus">-</dd>
+                      <dt>Ultrasonic</dt><dd id="deviceUltrasonicStatus">-</dd>
+                      <dt>ESP32-CAM</dt><dd id="deviceCameraStatus">-</dd>
+                    </dl>
+                  </article>
+                </div>
+
+                <div class="settings-actions-row">
+                  <button class="secondary-button" id="testConnectionBtn">Tester la connexion</button>
+                  <button class="secondary-button" id="restartDeviceBtn">Redémarrer l'appareil</button>
+                  <button class="secondary-button" id="removeDeviceBtn">Supprimer l'appareil</button>
+                </div>
+
+                <div class="settings-form-section">
+                  <div class="settings-form-card">
+                    <h4>Configuration du device</h4>
+                    <div class="form-row">
+                      <label>Nom de l'appareil<input type="text" id="deviceFormName" placeholder="Portail principal" /></label>
+                      <label>Device ID<input type="text" id="deviceFormId" placeholder="SAMS-001" /></label>
+                    </div>
+                    <div class="form-row">
+                      <label>Code d'association<input type="text" id="deviceFormPairingCode" placeholder="XXXXXX" /></label>
+                      <label>Description<input type="text" id="deviceFormDescription" placeholder="Portail côté rue" /></label>
+                    </div>
+                    <div class="form-row form-actions">
+                      <button class="primary-button" id="connectDeviceBtn">Connecter l'appareil</button>
+                    </div>
+                  </div>
+                  <div class="settings-form-card">
+                    <h4>Paramètres avancés</h4>
+                    <div class="form-row">
+                      <label>Durée d'ouverture (s)<input type="number" id="configGateOpenDuration" placeholder="10" min="1" /></label>
+                      <label>Fermeture auto (s)<input type="number" id="configGateAutoClose" placeholder="30" min="1" /></label>
+                    </div>
+                    <div class="form-row">
+                      <label>Mode de fonctionnement<select id="configGateMode"><option value="auto">Automatique</option><option value="manual">Manuel</option><option value="hybrid">Hybride</option></select></label>
+                      <label>Distance détection (cm)<input type="number" id="configUltrasonicDistance" placeholder="120" min="10" /></label>
+                    </div>
+                    <div class="form-row">
+                      <label>Nom du réseau Wi-Fi (SSID)<input type="text" id="configWifiSsid" placeholder="Nom du réseau" /></label>
+                      <label>Mot de passe Wi-Fi<input type="password" id="configWifiPassword" placeholder="Mot de passe Wi-Fi" /></label>
+                    </div>
+                    <div class="form-row">
+                      <label>Adresse IP locale de l'ESP<input type="text" id="configDeviceLocalIp" placeholder="192.168.x.x" /></label>
+                      <label>Délai notification (s)<input type="number" id="configUltrasonicNotifyDelay" placeholder="15" min="1" /></label>
+                    </div>
+                    <div class="form-row">
+                      <label>Notifications activées<select id="configNotificationsEnabled"><option value="true">Activées</option><option value="false">Désactivées</option></select></label>
+                    </div>
+                    <div class="form-row form-actions">
+                      <button class="primary-button" id="saveDeviceConfigBtn">Enregistrer la configuration</button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          <section class="content-page" id="usersPage">
+            <div class="section-card fade-in">
+              <div class="section-header">
+                <div>
+                  <h2>Gestion des utilisateurs</h2>
+                  <p>Ajoutez, modifiez ou supprimez les comptes autorisés.</p>
+                </div>
+              </div>
+              <div class="users-card">
+                <div class="user-list" id="userList"></div>
+              </div>
+            </div>
+          </section>
+        </main>
+        <div class="mobile-nav" id="mobileNav">
+          <button type="button" class="mobile-nav-item active" data-page="dashboard"><span class="material-symbols-outlined">dashboard</span><span class="nav-text">Dashboard</span></button>
+          <button type="button" class="mobile-nav-item" data-page="historique"><span class="material-symbols-outlined">history</span><span class="nav-text">Historique</span></button>
+          <button type="button" class="mobile-nav-item" data-page="notifications"><span class="material-symbols-outlined">notifications</span><span class="nav-text">Notifications</span></button>
+          <button type="button" class="mobile-nav-item" data-page="radar"><span class="material-symbols-outlined">radar</span><span class="nav-text">Radar</span></button>
+          <button type="button" class="mobile-nav-item" data-page="settings"><span class="material-symbols-outlined">settings</span><span class="nav-text">Paramètres</span></button>
+          <button type="button" class="mobile-nav-item" data-page="camera"><span class="material-symbols-outlined">photo_camera</span><span class="nav-text">Caméra</span></button>
+          <button type="button" class="mobile-nav-item" data-page="users" id="mobileUsersMenuItem"><span class="material-symbols-outlined">group</span><span class="nav-text">Utilisateurs</span></button>
+        </div>
+      </section>
+    </div>
+
+    <div class="modal-overlay" id="cameraModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Caméra de surveillance</h3>
+          <button class="icon-button" id="closeCameraModal" aria-label="Fermer la fenêtre"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="camera-modal-body">
+          <div class="camera-stream-placeholder">
+            <p>Flux vidéo en direct</p>
+          </div>
+            <div class="modal-actions">
+            <button class="primary-button" data-action="open">Fermer la porte</button>
+            <button class="secondary-button" data-action="deny">Refuser l'accès</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal-overlay" id="deviceModal">
+      <div class="modal-card">
+        <div class="modal-header">
+          <h3>Ajouter un appareil ESP8266</h3>
+          <button class="icon-button" id="closeDeviceModal" aria-label="Fermer la fenêtre"><span class="material-symbols-outlined">close</span></button>
+        </div>
+        <div class="modal-body">
+          <form class="modal-form" id="addDeviceForm">
+            <label>
+              Nom de l'appareil
+              <input type="text" id="modalDeviceName" placeholder="Portail principal" required />
+            </label>
+            <label>
+              Adresse de l'ESP
+              <input type="text" id="modalDeviceId" value="192.168.4.1" placeholder="192.168.4.1" required />
+            </label>
+            <label>
+              Point d'accès ESP
+              <div class="input-with-button">
+                <select id="modalDeviceApSsid" required>
+                  <option value="">Sélectionnez un point d'accès</option>
+                </select>
+                <button type="button" class="secondary-button" id="scanApsBtn">Rechercher</button>
+              </div>
+              <small>Un navigateur ne peut pas scanner les Wi-Fi. Connectez-vous d'abord au réseau SAMS, puis l'interface teste automatiquement 192.168.4.1.</small>
+            </label>
+            <label>
+              Clé d'association
+              <input type="text" id="modalPairingCode" placeholder="Clé configurée dans l'ESP" required />
+            </label>
+            <label>
+              Description
+              <input type="text" id="modalDeviceDescription" placeholder="Portail côté rue" />
+            </label>
+            <div class="modal-actions">
+              <button class="primary-button" type="submit">Connecter l'appareil</button>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <div class="toast" id="toastMessage"></div>
+
+    <script src="app.js"></script>
+  </body>
+</html>
